@@ -17,7 +17,6 @@ public class RestauranteComFreteGratisSpec implements Specification<Restaurante>
 
 	@Override
 	public Predicate toPredicate(Root<Restaurante> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
-		// TODO Auto-generated method stub
 		return builder.equal(root.get("taxaFrete"), BigDecimal.ZERO);
 	}
 	

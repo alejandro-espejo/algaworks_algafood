@@ -20,7 +20,6 @@ public class RestauranteComNomeSemelhanteSpec implements Specification<Restauran
 
 	@Override
 	public Predicate toPredicate(Root<Restaurante> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
-		// TODO Auto-generated method stub
 		return builder.like(root.get("nome"), "%" + nome + "%");
 	}
 
