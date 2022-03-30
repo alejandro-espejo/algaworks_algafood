@@ -51,7 +51,7 @@ public class CadastroRestauranteService {
 			throw new EntidadeNaoEncontradaException(
 					String.format("Não existe cadastro de restaurante com código %d", restauranteId));
 		}
-		BeanUtils.copyProperties(restaurante, restauranteAtual.get(), "id");
+		BeanUtils.copyProperties(restaurante, restauranteAtual.get(), "id", "formaPagamento");
 		Long cozinhaId = restauranteAtual.get().getCozinha().getId();
 		Optional<Cozinha> cozinha = cozinhaRepository.findById(cozinhaId);
 		
