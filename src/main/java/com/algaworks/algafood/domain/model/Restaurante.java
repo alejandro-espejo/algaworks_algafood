@@ -8,6 +8,7 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,6 +22,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -45,7 +47,9 @@ public class Restaurante {
 	@Embedded
 	private Endereco endereco;
 	
-	@ManyToOne
+//	@JsonIgnore
+	@JsonIgnoreProperties("hibernateLazyInitializer") // IGNORAR UMA PROPRIEDADE DE COZINHA
+	@ManyToOne(fetch = FetchType.LAZY) // MUITOS RESTAURANTES PARA UMA COZINHA
 	@JoinColumn(name = "cozinha_id", nullable = false)
 	private Cozinha cozinha;
 	
@@ -60,12 +64,13 @@ public class Restaurante {
 	private LocalDateTime dataAtualizacao;
 	
 	@JsonIgnore
-	@ManyToMany // CRIA A TABELA DE RELACIONAMENTO DE RESTAURANTE E FORMA_PAGAMENTO
+	@ManyToMany(fetch = FetchType.EAGER) // CRIA A TABELA DE RELACIONAMENTO DE RESTAURANTE E FORMA_PAGAMENTO
 	@JoinTable(name = "restaurante_forma_pagamento",
 		joinColumns = @JoinColumn(name = "restaurante_id"), 
 		inverseJoinColumns = @JoinColumn(name = "forma_pagamento_id"))
 	private List<FormaPagamento> formasPagamento = new ArrayList<>();
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "restaurante")
 	private List<Produto> produtos;
 }
