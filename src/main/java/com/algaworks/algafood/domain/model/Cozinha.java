@@ -30,6 +30,9 @@ public class Cozinha {
 	@Column(nullable = false)
 	private String nome;
 	
+//	@Column(name = "observacao")
+//	private String descricao;
+	
 	@JsonIgnore // IGNORAR A PROPRIEDADE POR CONTA DO ERRO DE LOOP DE SERIALIZAÇÃO
 	@OneToMany(mappedBy = "cozinha") // UMA COZINHA ESTA EM MUITOS RESTAURANTES. MANY = COLEÇÃO(LIST) - IRÁ MOSTRAR QUAIS RESTAURANTES ESTÃO COM DETERMINADO ID DE COZINHA
 	private List<Restaurante> restaurantes = new ArrayList<>();
