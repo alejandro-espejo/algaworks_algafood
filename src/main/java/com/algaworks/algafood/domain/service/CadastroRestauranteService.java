@@ -8,6 +8,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
+import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.CozinhaRepository;
@@ -45,12 +46,16 @@ public class CadastroRestauranteService {
 
 	public Restaurante atualizar(Restaurante restaurante, Long restauranteId) {
 		Restaurante restauranteAtual = buscar(restauranteId);
-		BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formaPagamento", "endereco", "dataCadastro",
-				"produtos");
-		Long cozinhaId = restauranteAtual.getCozinha().getId();
-		Cozinha cozinha = cozinhaRepository.findById(cozinhaId).orElseThrow(
-				() -> new EntidadeNaoEncontradaException(String.format(MSG_COZINHA_NAO_ENCONTRADA, cozinhaId)));
-		restauranteAtual.setCozinha(cozinha);
+		BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formaPagamento", "endereco", "dataCadastro", "produtos");
+		
+		try {
+			Long cozinhaId = restauranteAtual.getCozinha().getId();
+			Cozinha cozinha = cozinhaRepository.findById(cozinhaId).orElseThrow(
+					() -> new EntidadeNaoEncontradaException(String.format(MSG_COZINHA_NAO_ENCONTRADA, cozinhaId)));
+			restauranteAtual.setCozinha(cozinha);
+		} catch (EntidadeNaoEncontradaException e) {
+			throw new NegocioException(e.getMessage());
+		}
 		return restauranteRepository.save(restauranteAtual);
 	}
 

@@ -8,6 +8,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
+import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.repository.CidadeRepository;
@@ -47,14 +48,17 @@ public class CadastroCidadeService {
 	public Cidade atualizar(Cidade cidade, Long cidadeId) {
 		Cidade cidadeAtual = buscar(cidadeId);
 		BeanUtils.copyProperties(cidade, cidadeAtual, "id");
-		Long estadoId = cidadeAtual.getEstado().getId();
 		
-		Estado estado = estadoRepository.findById(estadoId)
-				.orElseThrow(() -> new EntidadeNaoEncontradaException(
-						String.format(MSG_ESTADO_NAO_ENCONTRADO, estadoId)));
-		cidade.setEstado(estado);
-		
-		cidadeAtual.setEstado(estado);
+		try {
+			Long estadoId = cidadeAtual.getEstado().getId();
+			Estado estado = estadoRepository.findById(estadoId)
+					.orElseThrow(() -> new EntidadeNaoEncontradaException(
+							String.format(MSG_ESTADO_NAO_ENCONTRADO, estadoId)));
+			cidade.setEstado(estado);
+			cidadeAtual.setEstado(estado);
+		} catch (EntidadeNaoEncontradaException e) {
+			throw new NegocioException(e.getMessage());
+		}
 		return cidadeRepository.save(cidadeAtual);
 	}
 	
