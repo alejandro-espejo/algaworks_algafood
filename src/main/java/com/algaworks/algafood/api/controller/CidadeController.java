@@ -42,7 +42,11 @@ public class CidadeController {
 		try {
 			return cadastroCidade.salvar(cidade);
 		} catch (EntidadeNaoEncontradaException e) {
+<<<<<<< HEAD
 			throw new NegocioException(e.getMessage(), e);
+=======
+			throw new NegocioException(e.getMessage());
+>>>>>>> 5600908b08ba7e91a3770db2efe8d91ab0b13fa7
 		}
 	}
 
