@@ -1,7 +1,5 @@
 package com.algaworks.algafood.api.exceptionhandler;
 
-import java.time.LocalDateTime;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,28 +17,31 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 	// METODO PARA TRATAR EXCEÇÕES QUE OCORRE DENTRO DO PROPRIO CONTROLADOR
 	@ExceptionHandler(EntidadeNaoEncontradaException.class)
-	public ResponseEntity<?> tratarEstadoNaoEncontradoException(EntidadeNaoEncontradaException ex, WebRequest request) {
-		return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+	public ResponseEntity<?> handleEntidadeNaoEncontradaException(EntidadeNaoEncontradaException ex, WebRequest request) {
 		
-		// O retorno estará na estrutura JSON
-//		Problema problema = Problema.builder().dataHora(LocalDateTime.now()).mensagem(e.getMessage()).build();
-//
-//		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problema);
+		HttpStatus status = HttpStatus.NOT_FOUND;
+		ProblemType problemType = ProblemType.ENTIDADE_NAO_ENCONTRADA;
+		String detail = ex.getMessage();
+		
+		Problem problem = createProblemBuilder(status, problemType, detail).build();
+		
+//		Problem problem = Problem.builder()
+//				.status(status.value())
+//				.type("https://algafood.com.br/entidade-nao-encontrada")
+//				.title("Entidade não encontrada")
+//				.detail(detail)
+//				.build();
+		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
 	}
 
 	@ExceptionHandler(NegocioException.class)
-	public ResponseEntity<?> tratarNegocioException(NegocioException ex, WebRequest request) {
+	public ResponseEntity<?> handleNegocioException(NegocioException ex, WebRequest request) {
 		return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
-//		Problema problema = Problema.builder().dataHora(LocalDateTime.now()).mensagem(e.getMessage()).build();
-//		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problema);
 	}
 	
 	@ExceptionHandler(EntidadeEmUsoException.class)
-	public ResponseEntity<?> tratarEntidadeEmUsoException(EntidadeEmUsoException ex, WebRequest request) {
+	public ResponseEntity<?> handleEntidadeEmUsoException(EntidadeEmUsoException ex, WebRequest request) {
 		return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.CONFLICT, request);
-		
-//		Problema problema = Problema.builder().dataHora(LocalDateTime.now()).mensagem(e.getMessage()).build();
-//		return ResponseEntity.status(HttpStatus.CONFLICT).body(problema);
 	}
 	
 	@Override
@@ -48,12 +49,20 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 			HttpStatus status, WebRequest request) {
 		if (body == null) {
 			// Definimos um corpo de resposta de Exception padrão do Spring como um JSON
-			body = Problema.builder().dataHora(LocalDateTime.now()).mensagem(status.getReasonPhrase()).build();
+			body = Problem.builder().title(status.getReasonPhrase()).status(status.value()).build();
 		} else if (body instanceof String) {
 			// Assim a mensagem que nós definimos, irá vir no JSON
-			body = Problema.builder().dataHora(LocalDateTime.now()).mensagem((String) body).build();
+			body = Problem.builder().title((String) body).status(status.value()).build();
 		}
 		
 		return super.handleExceptionInternal(ex, body, headers, status, request);
-	}	
+	}
+	
+	private Problem.ProblemBuilder createProblemBuilder(HttpStatus status, ProblemType problemType, String detail) {
+		return Problem.builder()
+				.status(status.value())
+				.type(problemType.getUri())
+				.title(problemType.getTitle())
+				.detail(detail);
+	}
 }
