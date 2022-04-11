@@ -36,12 +36,24 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(NegocioException.class)
 	public ResponseEntity<?> handleNegocioException(NegocioException ex, WebRequest request) {
-		return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+		ProblemType problemType = ProblemType.ERRO_NEGOCIO;
+		String detail = ex.getMessage();
+		
+		Problem problem = createProblemBuilder(status, problemType, detail).build();
+		
+		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
 	}
 	
 	@ExceptionHandler(EntidadeEmUsoException.class)
 	public ResponseEntity<?> handleEntidadeEmUsoException(EntidadeEmUsoException ex, WebRequest request) {
-		return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.CONFLICT, request);
+		HttpStatus status = HttpStatus.CONFLICT;
+		ProblemType problemType = ProblemType.ENTIDADE_EM_USO;
+		String detail = ex.getMessage();
+		
+		Problem problem = createProblemBuilder(status, problemType, detail).build();
+		
+		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
 	}
 	
 	@Override
@@ -54,7 +66,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 			// Assim a mensagem que nós definimos, irá vir no JSON
 			body = Problem.builder().title((String) body).status(status.value()).build();
 		}
-		
 		return super.handleExceptionInternal(ex, body, headers, status, request);
 	}
 	
