@@ -1,5 +1,6 @@
 package com.algaworks.algafood.api.exceptionhandler;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.flywaydb.core.internal.util.ExceptionUtils;
@@ -15,7 +16,9 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
+import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
@@ -27,8 +30,10 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		// Obtem a causa raiz do problema
 		Throwable rootCause = ExceptionUtils.getRootCause(ex);
 		if (rootCause instanceof InvalidFormatException) {
-			return handleInvalidFormatException((InvalidFormatException) rootCause, headers, status, request);
-		}
+	        return handleInvalidFormatException((InvalidFormatException) rootCause, headers, status, request);
+	    } else if (rootCause instanceof PropertyBindingException) {
+	        return handlePropertyBindingException((PropertyBindingException) rootCause, headers, status, request); 
+	    }
 		ProblemType problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
 		String detail = "O corpo da requisição está inválido. Verifique o erro de sintaxe.";
 		Problem problem = createProblemBuilder(status, problemType, detail).build();
@@ -38,9 +43,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	private ResponseEntity<Object> handleInvalidFormatException(InvalidFormatException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 		
-		String path = ex.getPath().stream()
-				.map(ref -> ref.getFieldName())
-				.collect(Collectors.joining("."));
+		String path = joinPath(ex.getPath());
 		
 		//ex.getPath().forEach(ref -> System.out.println(ref.getFieldName()));
 		ProblemType problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
@@ -111,5 +114,23 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 				.type(problemType.getUri())
 				.title(problemType.getTitle())
 				.detail(detail);
+	}
+	
+	// DESAFIO
+	private String joinPath(List<Reference> references) {
+		return references.stream()
+				.map(ref -> ref.getFieldName())
+				.collect(Collectors.joining("."));
+	}
+	
+	private ResponseEntity<Object> handlePropertyBindingException(PropertyBindingException ex,
+			HttpHeaders headers, HttpStatus status, WebRequest request) {
+		String path = joinPath(ex.getPath());
+		
+		ProblemType problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
+		String detail = String.format("A propriedade '%s' não existe. "
+	            + "Corrija ou remova essa propriedade e tente novamente.", path);
+		Problem problem = createProblemBuilder(status, problemType, detail).build();
+		return handleExceptionInternal(ex, problem, headers, status, request);
 	}
 }
