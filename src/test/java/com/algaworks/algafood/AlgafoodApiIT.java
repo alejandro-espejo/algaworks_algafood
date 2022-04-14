@@ -15,7 +15,7 @@ import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.service.CadastroCozinhaService;
 
 @SpringBootTest
-public class AlgafoodApiApplicationTests {
+public class AlgafoodApiIT {
 
 	@Autowired
 	private CadastroCozinhaService cadastroCozinha;
@@ -62,5 +62,5 @@ public class AlgafoodApiApplicationTests {
         	cadastroCozinha.excluir(100L);
 		});
 		assertThat(erroEsperado).isNotNull();
-    }       
+    }
 }
