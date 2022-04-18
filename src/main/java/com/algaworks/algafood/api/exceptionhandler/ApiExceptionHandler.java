@@ -1,6 +1,6 @@
 package com.algaworks.algafood.api.exceptionhandler;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -123,16 +123,18 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 			HttpStatus status, WebRequest request) {
 		if (body == null) {
 			// Definimos um corpo de resposta de Exception padrão do Spring como um JSON
-			body = Problem.builder().title(status.getReasonPhrase()).status(status.value()).build();
+			body = Problem.builder().timestamp(OffsetDateTime.now()).title(status.getReasonPhrase())
+					.status(status.value()).userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL).build();
 		} else if (body instanceof String) {
 			// Assim a mensagem que nós definimos, irá vir no JSON
-			body = Problem.builder().title((String) body).status(status.value()).build();
+			body = Problem.builder().timestamp(OffsetDateTime.now()).title((String) body).status(status.value())
+					.userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL).build();
 		}
 		return super.handleExceptionInternal(ex, body, headers, status, request);
 	}
 
 	private Problem.ProblemBuilder createProblemBuilder(HttpStatus status, ProblemType problemType, String detail) {
-		return Problem.builder().timestamp(LocalDateTime.now()).status(status.value()).type(problemType.getUri())
+		return Problem.builder().timestamp(OffsetDateTime.now()).status(status.value()).type(problemType.getUri())
 				.title(problemType.getTitle()).detail(detail);
 	}
 
@@ -197,35 +199,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
-//		ProblemType problemType = ProblemType.DADOS_INVALIDOS;
-//		String detail = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.";
-//		
-//		// Armazena as violações de constraints de validação ou seja quais propriedades foram violadas
-//		BindingResult bindingResult = ex.getBindingResult();
-//		
-//		// Obtem uma lista de Problem.Field
-//		List<Problem.Object> problemFields = bindingResult.getAllErrors().stream()
-//				.map(objectError -> {
-//					String message = messageSource.getMessage(objectError, LocaleContextHolder.getLocale());
-//					
-//					String name = objectError.getObjectName();
-//					
-//					if (objectError instanceof FieldError) {
-//						name = ((FieldError) objectError).getField();
-//					}
-//					
-//					return Problem.Object.builder()
-//						.name(name)
-//						.userMessage(message)
-//						.build();})
-//				.collect(Collectors.toList());
-//		
-//		Problem problem = createProblemBuilder(status, problemType, detail)
-//				.userMessage(detail)
-//				.objects(problemFields)
-//				.build();
-//		
-//		return handleExceptionInternal(ex, problem, headers, status, request);
 		return handleValidationInternal(ex, ex.getBindingResult(), headers, status, request);
 	}
 
