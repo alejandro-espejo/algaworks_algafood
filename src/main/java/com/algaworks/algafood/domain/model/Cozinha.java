@@ -13,7 +13,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import com.algaworks.algafood.core.validation.Groups;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonRootName;
 
 import lombok.Data;
@@ -38,7 +37,6 @@ public class Cozinha {
 //	@Column(name = "observacao")
 //	private String descricao;
 	
-	@JsonIgnore // IGNORAR A PROPRIEDADE POR CONTA DO ERRO DE LOOP DE SERIALIZAÇÃO
 	@OneToMany(mappedBy = "cozinha") // UMA COZINHA ESTA EM MUITOS RESTAURANTES. MANY = COLEÇÃO(LIST) - IRÁ MOSTRAR QUAIS RESTAURANTES ESTÃO COM DETERMINADO ID DE COZINHA
 	private List<Restaurante> restaurantes = new ArrayList<>();
 	
