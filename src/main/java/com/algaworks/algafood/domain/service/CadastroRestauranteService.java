@@ -6,6 +6,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
@@ -34,6 +35,7 @@ public class CadastroRestauranteService {
 				() -> new RestauranteNaoEncontradaException(restauranteId));
 	}
 
+	@Transactional
 	public Restaurante salvar(Restaurante restaurante) {
 		Long cozinhaId = restaurante.getCozinha().getId();
 		Cozinha cozinha = cozinhaRepository.findById(cozinhaId)
@@ -42,6 +44,7 @@ public class CadastroRestauranteService {
 		return restauranteRepository.save(restaurante);
 	}
 
+	@Transactional
 	public Restaurante atualizar(Restaurante restaurante, Long restauranteId) {
 		Restaurante restauranteAtual = buscar(restauranteId);
 		BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formaPagamento", "endereco", "dataCadastro", "produtos");
@@ -57,6 +60,7 @@ public class CadastroRestauranteService {
 		return restauranteRepository.save(restauranteAtual);
 	}
 
+	@Transactional
 	public void excluir(Long restauranteId) {
 		try {
 			restauranteRepository.deleteById(restauranteId);
