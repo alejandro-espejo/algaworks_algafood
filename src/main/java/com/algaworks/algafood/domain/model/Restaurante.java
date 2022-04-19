@@ -45,23 +45,23 @@ public class Restaurante {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotBlank(message = "Nome é obrigatório")
+	//@NotBlank(message = "Nome é obrigatório")
 	@Column(nullable = false)
 	private String nome;
 
 //	@DecimalMin("0")
-	@NotNull
-	@PositiveOrZero(message = "{TaxaFrete.invalida}")
-	@Multiplo(numero = 5)
+	//@NotNull
+	//@PositiveOrZero(message = "{TaxaFrete.invalida}")
+	//@Multiplo(numero = 5)
 	@Column(name = "taxa_frete", nullable = false)
 	private BigDecimal taxaFrete;
 
 	@Embedded
 	private Endereco endereco;
 	
-	@Valid
-	@ConvertGroup(from = Default.class, to = Groups.CozinhaId.class)
-	@NotNull
+	//@Valid
+	//@ConvertGroup(from = Default.class, to = Groups.CozinhaId.class)
+	//@NotNull
 //	@JsonIgnoreProperties("hibernateLazyInitializer") // IGNORAR UMA PROPRIEDADE DE COZINHA
 	@ManyToOne //(fetch = FetchType.LAZY) // MUITOS RESTAURANTES PARA UMA COZINHA
 	@JoinColumn(name = "cozinha_id", nullable = false)
