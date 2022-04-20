@@ -62,8 +62,15 @@ public class RestauranteController {
 	}
 
 	@PutMapping("/{restauranteId}")
-	public RestauranteModel atualizar(@PathVariable Long restauranteId, @RequestBody @Valid Restaurante restaurante) {
-		return restauranteModelAssembler.toModel(cadastroRestaurante.atualizar(restaurante, restauranteId));
+	public RestauranteModel atualizar(@PathVariable Long restauranteId, 
+			@RequestBody @Valid RestauranteInput restauranteInput) {
+		try {
+			Restaurante restauranteAtual = cadastroRestaurante.buscar(restauranteId);
+			restauranteInputDisassembler.copyToDomainObject(restauranteInput, restauranteAtual);
+			return restauranteModelAssembler.toModel(cadastroRestaurante.salvar(restauranteAtual));
+		} catch (CozinhaNaoEncontradaException e) {
+			throw new NegocioException(e.getMessage());
+		}
 	}
 
 	@DeleteMapping("/{restauranteId}")
