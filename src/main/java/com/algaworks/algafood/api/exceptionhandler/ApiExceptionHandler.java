@@ -43,7 +43,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	@Override
 	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
-
 		// Obtem a causa raiz do problema
 		Throwable rootCause = ExceptionUtils.getRootCause(ex);
 		if (rootCause instanceof InvalidFormatException) {

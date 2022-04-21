@@ -34,7 +34,9 @@ public class Cozinha {
 //	@Column(name = "observacao")
 //	private String descricao;
 	
-	@OneToMany(mappedBy = "cozinha") // UMA COZINHA ESTA EM MUITOS RESTAURANTES. MANY = COLEÇÃO(LIST) - IRÁ MOSTRAR QUAIS RESTAURANTES ESTÃO COM DETERMINADO ID DE COZINHA
+	// UMA COZINHA ESTA EM MUITOS RESTAURANTES. MANY = COLEÇÃO(LIST) - 
+	// IRÁ MOSTRAR QUAIS RESTAURANTES ESTÃO COM DETERMINADO ID DE COZINHA
+	@OneToMany(mappedBy = "cozinha")
 	private List<Restaurante> restaurantes = new ArrayList<>();
 	
 }
