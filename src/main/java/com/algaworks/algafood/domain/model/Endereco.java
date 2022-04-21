@@ -5,8 +5,6 @@ import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Data;
 
 @Data
@@ -28,7 +26,7 @@ public class Endereco {
 	@Column(name = "endereco_bairro")
 	private String bairro;
 	
-	@JsonIgnore
+//	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "endereco_cidade_id")
 	private Cidade cidade;
