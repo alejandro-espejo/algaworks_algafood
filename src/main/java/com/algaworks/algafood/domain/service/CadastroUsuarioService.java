@@ -1,5 +1,7 @@
 package com.algaworks.algafood.domain.service;
 
+import java.util.Optional;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +17,19 @@ public class CadastroUsuarioService {
 
 	@Autowired
 	private UsuarioRepository usuarioRepository;
-	
+
 	@Transactional
 	public Usuario salvar(Usuario usuario) {
+		usuarioRepository.detach(usuario); // O JPA para de gerenciar essa persistencia. Não efetuando o update
+		
+		Optional<Usuario> usuarioExistente = usuarioRepository.findByEmail(usuario.getEmail());
+		if (usuarioExistente.isPresent() && !usuarioExistente.get().equals(usuario)) {
+			throw new NegocioException(
+					String.format("Já existe um usuário cadastrado com o e-mail %s", usuario.getEmail()));
+		}
 		return usuarioRepository.save(usuario);
 	}
-	
+
 	@Transactional
 	public void alterarSenha(Long usuarioId, String senhaAtual, String novaSenha) {
 		Usuario usuario = buscarOuFalhar(usuarioId);
@@ -29,9 +38,8 @@ public class CadastroUsuarioService {
 		}
 		usuario.setSenha(novaSenha);
 	}
-	
+
 	public Usuario buscarOuFalhar(Long usuarioId) {
-		return usuarioRepository.findById(usuarioId)
-				.orElseThrow(() -> new UsuarioNaoEncontradoException(usuarioId));
+		return usuarioRepository.findById(usuarioId).orElseThrow(() -> new UsuarioNaoEncontradoException(usuarioId));
 	}
 }
