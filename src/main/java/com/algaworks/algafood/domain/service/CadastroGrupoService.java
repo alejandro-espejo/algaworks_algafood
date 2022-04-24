@@ -60,4 +60,5 @@ public class CadastroGrupoService {
 		Permissao permissao = cadastroPermissao.buscarOuFalhar(permissaoId);
 		grupo.adicionarPermissao(permissao);
 	}
+	
 }
