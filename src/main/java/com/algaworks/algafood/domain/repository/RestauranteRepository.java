@@ -32,4 +32,11 @@ public interface RestauranteRepository
 	List<Restaurante> findTop2ByNomeContaining(String nome);
 	
 	int countByCozinhaId(Long cozinha);
+	
+	// Exemplo JOIN
+//	@Query("select NEW com.algaworks.algafood.domain.model.RestauranteCozinha(r.id, r.nome, c.nome) "
+//			+ "from Restaurante r inner join r.cozinha c where c.nome = :cozinha")
+//	List<RestauranteCozinha> findByRestauranteCozinha(String cozinha);
+	
+	
 }

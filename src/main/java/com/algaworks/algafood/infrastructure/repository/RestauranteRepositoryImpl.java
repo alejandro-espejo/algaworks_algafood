@@ -1,8 +1,5 @@
 package com.algaworks.algafood.infrastructure.repository;
 
-import static com.algaworks.algafood.infrastructure.repository.spec.RestauranteSpecs.comFreteGratis;
-import static com.algaworks.algafood.infrastructure.repository.spec.RestauranteSpecs.comNomeSemelhante;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,10 +61,10 @@ public class RestauranteRepositoryImpl implements RestauranteRepositoryQueries{
 		return query.getResultList();
 	}
 
-	@Override
-	public List<Restaurante> findComFreteGratis(String nome) {
-		return restauranteRepository.findAll(comFreteGratis().and(comNomeSemelhante(nome)));
-	}
-	
+//	@Override
+//	public List<Restaurante> findComFreteGratis(String nome) {
+//		return restauranteRepository.findAll(comFreteGratis().and(comNomeSemelhante(nome)));
+//	}
+//	
 	
 }
