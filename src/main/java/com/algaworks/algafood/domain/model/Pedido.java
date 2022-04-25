@@ -39,7 +39,7 @@ public class Pedido {
 	private BigDecimal valorTotal;
 	
 	@Embedded
-	private Endereco endereco;
+	private Endereco enderecoEntrega;
 	
 	@Enumerated(EnumType.STRING)
 	private StatusPedido status = StatusPedido.CRIADO;
@@ -59,7 +59,7 @@ public class Pedido {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "forma_pagamento_id", nullable = false)
-	private FormaPagamento forma_pagamento;
+	private FormaPagamento formaPagamento;
 	
 	@ManyToOne
 	@JoinColumn(nullable = false)
@@ -73,17 +73,18 @@ public class Pedido {
 	private List<ItemPedido> itens = new ArrayList<>();
 	
 	public void calcularValorTotal() {
+		getItens().forEach(ItemPedido::calcularPrecoTotal);
 		this.subtotal = getItens().stream()
 				.map(item -> item.getPrecoTotal())
 				.reduce(BigDecimal.ZERO, BigDecimal::add);
 		this.valorTotal = this.subtotal.add(this.taxaFrete);
 	}
 	
-	public void definirFrete() {
-		setTaxaFrete(getRestaurante().getTaxaFrete());
-	}
-	
-	public void atribuirPedidoAosItens() {
-		getItens().forEach(item -> item.setPedido(this));
-	}
+//	public void definirFrete() {
+//		setTaxaFrete(getRestaurante().getTaxaFrete());
+//	}
+//	
+//	public void atribuirPedidoAosItens() {
+//		getItens().forEach(item -> item.setPedido(this));
+//	}
 }
