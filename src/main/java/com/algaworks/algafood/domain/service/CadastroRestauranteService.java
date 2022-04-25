@@ -67,6 +67,16 @@ public class CadastroRestauranteService {
 		Restaurante restauranteAtual = buscar(restauranteId);
 		restauranteAtual.inativar();
 	}
+	
+	@Transactional
+	public void ativar(List<Long> restauranteIds) {
+		restauranteIds.forEach(this::ativar);
+	}
+	
+	@Transactional
+	public void inativar(List<Long> restauranteIds) {
+		restauranteIds.forEach(this::inativar);
+	}
 
 	@Transactional
 	public void excluir(Long restauranteId) {
