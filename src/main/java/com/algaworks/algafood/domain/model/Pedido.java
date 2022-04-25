@@ -5,11 +5,13 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -32,9 +34,15 @@ public class Pedido {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	private BigDecimal subTotal;
+	private BigDecimal subtotal;
 	private BigDecimal taxaFrete;
 	private BigDecimal valorTotal;
+	
+	@Embedded
+	private Endereco endereco;
+	
+	@Enumerated(EnumType.STRING)
+	private StatusPedido status = StatusPedido.CRIADO;
 	
 	@CreationTimestamp
 	@Column(nullable = false, columnDefinition = "datetime")
@@ -49,13 +57,7 @@ public class Pedido {
 	@Column(nullable = false, columnDefinition = "datetime")
 	private OffsetDateTime dataEntrega;
 	
-	@Enumerated(EnumType.STRING)
-	private StatusPedido status = StatusPedido.CRIADO;
-	
-	@Embedded
-	private Endereco endereco;
-	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "forma_pagamento_id", nullable = false)
 	private FormaPagamento forma_pagamento;
 	
@@ -67,14 +69,14 @@ public class Pedido {
 	@JoinColumn(name = "usuario_cliente_id", nullable = false)
 	private Usuario cliente;
 	
-	@OneToMany(mappedBy = "pedido")
+	@OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
 	private List<ItemPedido> itens = new ArrayList<>();
 	
 	public void calcularValorTotal() {
-		this.subTotal = getItens().stream()
+		this.subtotal = getItens().stream()
 				.map(item -> item.getPrecoTotal())
 				.reduce(BigDecimal.ZERO, BigDecimal::add);
-		this.valorTotal = this.subTotal.add(this.taxaFrete);
+		this.valorTotal = this.subtotal.add(this.taxaFrete);
 	}
 	
 	public void definirFrete() {
