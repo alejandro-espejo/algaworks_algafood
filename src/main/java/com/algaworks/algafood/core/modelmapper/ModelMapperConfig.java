@@ -23,6 +23,8 @@ public class ModelMapperConfig {
 				enderecoSrc -> enderecoSrc.getCidade().getEstado().getNome(), 
 				(enderecoModelDest, value) -> enderecoModelDest.getCidade().setEstado(value));
 		
+		// Cria um typeMap da conversão de ItemPedidoInput para ItemPedido
+		// e ignora o mapeamentop do setId, não atribuir o valor de ID, não irá fazer o método setId
 		modelMapper.createTypeMap(ItemPedidoInput.class, ItemPedido.class)
 			.addMappings(mapper -> mapper.skip(ItemPedido::setId));
 		
