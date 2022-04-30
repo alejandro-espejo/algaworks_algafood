@@ -117,12 +117,4 @@ public class Pedido {
 	private void gerarCodigo() {
 		setCodigo(UUID.randomUUID().toString());
 	}
-	
-//	public void definirFrete() {
-//		setTaxaFrete(getRestaurante().getTaxaFrete());
-//	}
-//	
-//	public void atribuirPedidoAosItens() {
-//		getItens().forEach(item -> item.setPedido(this));
-//	}
 }

@@ -51,33 +51,34 @@ public class PedidoController {
 	@Autowired
 	private PedidoInputDisassembler pedidoInputDisassembler;
 	
-	@GetMapping
-	public MappingJacksonValue listar(@RequestParam(required = false) String campos) {
-		List<Pedido> todosPedidos = pedidoRepository.findAll();
-		List<PedidoResumoModel> pedidosModel = pedidoResumoModelAssembler.toCollectionModel(todosPedidos);
-		
-		MappingJacksonValue pedidosWrapper = new MappingJacksonValue(pedidosModel);
-		
-		SimpleFilterProvider filterProvider = new SimpleFilterProvider();
-		
-		// Filtro com todos os campos
-		filterProvider.addFilter("pedidoFilter", SimpleBeanPropertyFilter.serializeAll());
-		
-		// Filtro com o nome dos campos passados
-		if(StringUtils.isNotBlank(campos)) {
-			filterProvider.addFilter("pedidoFilter", SimpleBeanPropertyFilter.filterOutAllExcept(campos.split(",")));
-		}
-		
-		pedidosWrapper.setFilters(filterProvider);
-		
-		return pedidosWrapper;
-	}
-	
 //	@GetMapping
-//	public List<PedidoResumoModel> listar() {
+//	public MappingJacksonValue listar(@RequestParam(required = false) String campos) {
 //		List<Pedido> todosPedidos = pedidoRepository.findAll();
-//		return pedidoResumoModelAssembler.toCollectionModel(todosPedidos);
+//		List<PedidoResumoModel> pedidosModel = pedidoResumoModelAssembler.toCollectionModel(todosPedidos);
+//		
+//		MappingJacksonValue pedidosWrapper = new MappingJacksonValue(pedidosModel);
+//		
+//		// Classe do Jackson para efetuar a filtragem
+//		SimpleFilterProvider filterProvider = new SimpleFilterProvider();
+//		
+//		// Filtro com todos os campos
+//		filterProvider.addFilter("pedidoFilter", SimpleBeanPropertyFilter.serializeAll());
+//		
+//		// Filtro com o nome dos campos passados
+//		if(StringUtils.isNotBlank(campos)) {
+//			filterProvider.addFilter("pedidoFilter", SimpleBeanPropertyFilter.filterOutAllExcept(campos.split(",")));
+//		}
+//		
+//		pedidosWrapper.setFilters(filterProvider);
+//		
+//		return pedidosWrapper;
 //	}
+	
+	@GetMapping
+	public List<PedidoResumoModel> listar() {
+		List<Pedido> todosPedidos = pedidoRepository.findAll();
+		return pedidoResumoModelAssembler.toCollectionModel(todosPedidos);
+	}
 	
 	@GetMapping("/{codigoPedido}")
 	public PedidoModel buscar(@PathVariable String codigoPedido) {
