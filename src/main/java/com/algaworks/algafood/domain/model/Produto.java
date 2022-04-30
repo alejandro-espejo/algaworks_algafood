@@ -35,7 +35,7 @@ public class Produto {
 	private BigDecimal preco;
 	
 	@Column(nullable = false)
-	private int ativo;
+	private Boolean ativo;
 	
 	@JsonIgnore
 	@ManyToOne // MUITOS PRODUTOS PARA UM RESTAURANTE

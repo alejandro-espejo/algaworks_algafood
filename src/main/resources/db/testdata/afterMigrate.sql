@@ -113,3 +113,4 @@ values (2, '51a1cf39-c669-11ec-885f-706979a71be5', 4, 1, 2, 1, '38400-111', 'Rua
 
 insert into item_pedido (id, pedido_id, produto_id, quantidade, preco_unitario, preco_total, observacao)
 values (3, 2, 6, 1, 79, 79, 'Ao ponto');
+
