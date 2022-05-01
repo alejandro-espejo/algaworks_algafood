@@ -13,11 +13,14 @@ public class PedidoSpecs {
 
 	public static Specification<Pedido> usandoFiltro(PedidoFilter filtro) {
 		return (root, query, builder) -> {
-			// para efetuar uma só consulta, como se fosse um JOIN, agora, usando Criteria
-			// Seria o: from Pedido p join fetch p.cliente
-			root.fetch("restaurante").fetch("cozinha");
-			root.fetch("cliente");
-			
+			//
+			if (Pedido.class.equals(query.getResultType())) {
+				// para efetuar uma só consulta, como se fosse um JOIN, agora, usando Criteria
+				// Seria o: from Pedido p join fetch p.cliente
+				
+				root.fetch("restaurante").fetch("cozinha");
+				root.fetch("cliente");
+			}
 			var predicates = new ArrayList<Predicate>();
 			
 			// adicionar predicates no arrayList
