@@ -20,6 +20,7 @@
 		<!-- Sobrescreve a versão do Java, aqui defino a versão do Java que eu irei usar -->
 		<java.version>17</java.version>
 		<squiggly.version>1.3.18</squiggly.version>
+		<jasperreports.version>6.16.0</jasperreports.version>
 	</properties>
 	
 	<!-- Tudo que for colocado em dedpendencies será carregado para dentro do projeto -->
@@ -104,6 +105,20 @@
 		    <artifactId>squiggly-filter-jackson</artifactId>
 		    <version>${squiggly.version}</version>
 		</dependency>
+		
+		<!-- Dependencia do Jasper -->
+		<dependency>
+		  <groupId>net.sf.jasperreports</groupId>
+		  <artifactId>jasperreports</artifactId>
+		  <version>${jasperreports.version}</version>
+		</dependency>
+		<!-- Por conta da formatação de data que fizemos no Jasper -->
+		<dependency>
+		  <groupId>net.sf.jasperreports</groupId>
+		  <artifactId>jasperreports-functions</artifactId>
+		  <version>${jasperreports.version}</version>
+		</dependency>
+		
 	</dependencies>
 
 	<build>
