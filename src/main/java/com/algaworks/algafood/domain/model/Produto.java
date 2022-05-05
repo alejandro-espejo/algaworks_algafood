@@ -41,4 +41,5 @@ public class Produto {
 	@ManyToOne // MUITOS PRODUTOS PARA UM RESTAURANTE
 	@JoinColumn(name = "restaurante_id", nullable = false)
 	private Restaurante restaurante;
+	
 }
