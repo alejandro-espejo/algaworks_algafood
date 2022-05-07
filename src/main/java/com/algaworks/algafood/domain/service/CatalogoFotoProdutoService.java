@@ -24,6 +24,7 @@ public class CatalogoFotoProdutoService {
 	public FotoProduto salvar(FotoProduto foto, InputStream dadosArquivo) {
 		Long restauranteId = foto.getRestauranteId();
 		Long produtoId = foto.getProduto().getId();
+		String nomeArquivoExistente = null;
 		
 		// Para gerar um UUID no nome do arquivo
 		String nomeNovoArquivo = fotoStorageService.gerarNomeArquivo(foto.getNomeArquivo());
@@ -32,6 +33,7 @@ public class CatalogoFotoProdutoService {
 
 		if (fotoExistente.isPresent()) {
 			// excluir foto
+			nomeArquivoExistente = fotoExistente.get().getNomeArquivo();
 			produtoRepository.delete(fotoExistente.get());
 		}
 
@@ -44,7 +46,7 @@ public class CatalogoFotoProdutoService {
 				.nomeArquivo(foto.getNomeArquivo())
 				.inputStream(dadosArquivo).build();
 
-		fotoStorageService.armazenar(novaFoto);
+		fotoStorageService.substituir(nomeArquivoExistente, novaFoto);
 
 		return foto;
 	}
