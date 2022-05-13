@@ -45,10 +45,11 @@ public class CatalogoFotoProdutoService {
 		// Irá armazenar a foto
 		NovaFoto novaFoto = NovaFoto.builder()
 				.nomeArquivo(foto.getNomeArquivo())
-				.inputStream(dadosArquivo).build();
+				.contentType(foto.getContentType())
+				.inputStream(dadosArquivo)
+				.build();
 
 		fotoStorageService.substituir(nomeArquivoExistente, novaFoto);
-
 		return foto;
 	}
 	
